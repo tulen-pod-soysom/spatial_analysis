@@ -1,0 +1,3 @@
+/home/aleksey/code/spatial_analysis/technological_practice/interpolation/build/CMakeFiles/interpolation.dir
+/home/aleksey/code/spatial_analysis/technological_practice/interpolation/build/CMakeFiles/edit_cache.dir
+/home/aleksey/code/spatial_analysis/technological_practice/interpolation/build/CMakeFiles/rebuild_cache.dir

@@ -24,6 +24,7 @@
 #include <string>
 #include <type_traits>
 
+
 using gray_image = boost::numeric::ublas::matrix<unsigned char>;
 using image_spectre = boost::numeric::ublas::matrix<std::complex<double>>;
 
@@ -150,6 +151,41 @@ template <typename Matrix>
 double calculate_energy(const Matrix& m)
 {
   return std::accumulate(m.data().begin(),m.data().end(),0.0,[](auto a, auto b){return a + sqr(b);});
+}
+
+template <typename Matrix>
+double MSE_normalized(const Matrix& m1, const Matrix& m2)
+{
+  double error = 0;
+  double energy = 0;
+  for (auto i = m1.data().begin(), j = m2.data().begin(); i != m1.data().end(); ++i,++j) {
+    error += (*i - *j) *(*i - *j);
+    energy += (*i) * (*i);
+  }
+  return error / energy;
+}
+
+template <typename Matrix1, typename Matrix2>
+double MSE(const Matrix1& m1, const Matrix2& m2)
+{
+  double error = 0;
+  auto i = m1.data().begin();
+  auto j = m2.data().begin();
+  for (; i != m1.data().end(); ++i,++j) {
+    error += (*i - j->real()) *(*i - j->real());
+  }
+  return error / m1.data().size();
+}
+
+template <typename Matrix>
+double PSNR(const Matrix& m1, const Matrix& m2)
+{
+  // return 10 * log(255/MSE(m1,m2));
+}
+
+double PSNR(double MSE)
+{
+  return 10 * log(255*255/MSE);
 }
 
 
@@ -334,13 +370,19 @@ Matrix bilinear_interpolation(const Matrix& m, size_t w, size_t h, size_t w_new,
       double x = j/double(w_new);
       double y = i/double(h_new);
 
-      int closest_lx = floor(x*(w));
-      int closest_rx = ceil(x*(w));
-      int closest_ly = floor(y*(h));
-      int closest_ry = ceil(y*(h));
+      int closest_lx = floor(j*(w)/double(w_new));
+      int closest_rx = ceil(j*(w)/double(w_new));
+      int closest_ly = floor(i*(h)/double(h_new));
+      int closest_ry = ceil(i*(h)/double(h_new));
 
-      if ((closest_lx == closest_rx) || (closest_ly == closest_ry)) {
-        out(i, j) = m(closest_lx, closest_lx);
+      // this point corresponds to the previous image's grid
+      bool divides_x = j * w % w_new == 0 ? true: false;
+      bool divides_y = i * h % h_new == 0 ? true: false;
+
+
+      // if ((closest_lx == closest_rx) || (closest_ly == closest_ry)) {
+      if (divides_x && divides_y){
+        out(i, j) = m(closest_ly, closest_lx);
         continue;
       }
 
@@ -349,11 +391,13 @@ Matrix bilinear_interpolation(const Matrix& m, size_t w, size_t h, size_t w_new,
       auto p21 = m(closest_ry, closest_lx);
       auto p22 = m(closest_ry, closest_rx);
 
-      if (closest_lx == closest_rx) {
+      // if (closest_lx == closest_rx) {
+      if (divides_x) {
         out(i, j) = (closest_ry - y * h) * p11 + (y * h - closest_ly) * p21;
         continue;
       }
-      if (closest_ly == closest_ry) {
+      // if (closest_ly == closest_ry) {
+      if (divides_y) {
         out(i, j) = (closest_rx - x * w) * p11 + (x * w - closest_lx) * p12;
         continue;
       }
@@ -452,6 +496,11 @@ int main() {
 
   image_spectre im_restored = fft_2d(filtered_spec, true);
   save_to_file("output/image4.png", im_restored,[](auto a){return int(abs(a));});
+
+  auto mse = MSE(im, im_restored) ;
+  auto psnr = PSNR(mse);
+  std::cout << "mean squared error" << mse / calculate_energy(im) * im.data().size() << std::endl;
+  std::cout << "peak signal-to-ratio" << psnr << std::endl;
 
   int answer;
   ask("What to do next:\n 1 - generate new image,\n 2 - set new noise,\n 3 - set new filter threshold,\n 4 - quit", answer);

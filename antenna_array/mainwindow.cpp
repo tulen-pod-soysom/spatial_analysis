@@ -24,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
     m->setColorScale(s);
     m->setGradient(QCPColorGradient::gpHot);
     m->rescaleDataRange();
+    p->xAxis->setLabel("φ, град");
+    p->yAxis->setLabel("θ, град");
     p->rescaleAxes();
     p->replot();
 }

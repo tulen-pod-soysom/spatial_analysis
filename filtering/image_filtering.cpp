@@ -174,7 +174,7 @@ double MSE(const Matrix1& m1, const Matrix2& m2)
   for (; i != m1.data().end(); ++i,++j) {
     error += (*i - j->real()) *(*i - j->real());
   }
-  return error / m1.data().size();
+  return error;
 }
 
 template <typename Matrix>
@@ -498,9 +498,9 @@ int main() {
   save_to_file("output/image4.png", im_restored,[](auto a){return int(abs(a));});
 
   auto mse = MSE(im, im_restored) ;
-  auto psnr = PSNR(mse);
-  std::cout << "mean squared error" << mse / calculate_energy(im) * im.data().size() << std::endl;
-  std::cout << "peak signal-to-ratio" << psnr << std::endl;
+  auto psnr = PSNR(mse / im.data().size());
+  std::cout << "mean squared error: " << mse / calculate_energy(im) << std::endl;
+  std::cout << "peak signal-to-noise ratio: " << psnr << " dB" << std::endl;
 
   int answer;
   ask("What to do next:\n 1 - generate new image,\n 2 - set new noise,\n 3 - set new filter threshold,\n 4 - quit", answer);

@@ -173,7 +173,7 @@ auto filter_image(Matrix& m, double energy_fraction = 0.95)
         deceased_energy += sqr(m(i_, m.size2() - 1 - j));
 
         if (deceased_energy > threshold)
-          return;
+          return std::make_tuple(i,j);
 
         m(i_, j) = 0;
         m(i_, m.size2() - 1 - j) = 0;
@@ -185,7 +185,7 @@ auto filter_image(Matrix& m, double energy_fraction = 0.95)
         deceased_energy += sqr(m(m.size1() - 1 - i, j_));
 
         if (deceased_energy > threshold)
-          return;
+          return std::make_tuple(i,j);
 
         m(i, j_) = 0;
         m(m.size1() - 1 - i, j_) = 0;
@@ -194,9 +194,9 @@ auto filter_image(Matrix& m, double energy_fraction = 0.95)
     if (i > 0) i--;
     if (j > 0) j--;
 
-    if (i <= 0 && j <= 0) return;
+    if (i <= 0 && j <= 0) return std::make_tuple(i,j);
   }
-
+  return std::make_tuple(0,0);
 };
 
 
@@ -250,15 +250,35 @@ auto save_to_file(std::string filename, Matrix& m, Preprocessor preprocessor = [
 }
 
 template<typename Matrix>
-auto save_spectre(std::string filename, Matrix& m, bool log = true)
+auto save_spectre(std::string filename, Matrix m, bool log = true,int frame_i = 0, int frame_j = 0)
 {
   auto a = m(0,0);
   m(0,0) = 0;
+
 
   auto pair = std::minmax_element(m.data().begin(),m.data().end(),[](auto a, auto b){return sqr(a) < sqr(b);});
 
   double max = abs(*pair.second);
   double max2 = sqr(*pair.second);
+
+  if ((frame_i != 0 ) && (frame_j != 0))
+  {
+    for (auto i = 0; i < frame_i ; ++i ) {
+      m(i,frame_j) = max;
+      m(i,m.size2() - frame_j - 1) = max;
+      m(m.size1() - i - 1,frame_j) = max;
+      m(m.size1() - i - 1,m.size2() - frame_j - 1) = max;
+    }
+
+    for (auto j = 0; j < frame_j ; ++j) {
+      m(frame_i,j) = max;
+      m(frame_i,m.size2() - j - 1) = max;
+      m(m.size1() - frame_i - 1,j) = max;
+      m(m.size1() - frame_i - 1,m.size2() - j - 1) = max;
+    }
+  }
+
+
   if (log)
     save_to_file(filename, m, [&max2](auto a)-> int{return 255*log2(1 + sqr(a)) /log2(1 + max2);});
   else
@@ -340,7 +360,7 @@ Matrix bilinear_interpolation(const Matrix& m, size_t w, size_t h, size_t w_new,
       int closest_ry = ceil(y*(h));
 
       if ((closest_lx == closest_rx) || (closest_ly == closest_ry)) {
-        out(i, j) = m(closest_lx, closest_lx);
+        out(i, j) = m(closest_ly, closest_lx);
         continue;
       }
 
@@ -414,6 +434,25 @@ void ask(std::string question, bool& answer)
   }
 }
 
+template <typename T1,typename T2>
+auto MSE(boost::numeric::ublas::matrix<T1> m1, boost::numeric::ublas::matrix<T2> m2)
+{
+  double mse = 0, energy = 0;
+  for (auto i =0; i < m1.size1(); ++i) {
+    for (auto j = 0; j < m1.size2();++j)
+    {
+      mse += sqr(m1(i,j).real() - double(m2(i,j)));
+      // energy += sqr(m2(i,j));
+    }
+  }
+  return mse / m1.size1() / m1.size2();
+}
+
+auto PSNR(double mse)
+{
+  return 10*log(255*255/mse);
+}
+
 int main() {
 
   bool log;
@@ -447,11 +486,18 @@ int main() {
   filtering:
   ask("leave energy fraction: ", leave_energy_fraction);
   image_spectre filtered_spec = fft_2d(noised_im);
-  filter_image(filtered_spec,leave_energy_fraction);
-  save_spectre("output/image3.png", filtered_spec);
+  auto [f_i,f_j] = filter_image(filtered_spec,leave_energy_fraction);
+
+  // std::cout << f_i << ' ' << f_j << std::endl;
+  save_spectre("output/image3.png", filtered_spec,f_i,f_j);
 
   image_spectre im_restored = fft_2d(filtered_spec, true);
   save_to_file("output/image4.png", im_restored,[](auto a){return int(abs(a));});
+
+
+  double mse = MSE(im_restored,im);
+  std::cout << "MSE: " << mse / calculate_energy(im) * im.data().size() << std::endl;
+  std::cout << "peak-signal-to-noise ratio: " << PSNR(mse) << " dB"<< std::endl;
 
   int answer;
   ask("What to do next:\n 1 - generate new image,\n 2 - set new noise,\n 3 - set new filter threshold,\n 4 - quit", answer);

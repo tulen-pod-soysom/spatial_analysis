@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/aleksey/code/spatial_analysis/technological_practice/interpolation/build",
+  "command": "/usr/bin/clang++ -g -o CMakeFiles/interpolation.dir/interpolation.o -c /home/aleksey/code/spatial_analysis/technological_practice/interpolation/interpolation.cpp",
+  "file": "/home/aleksey/code/spatial_analysis/technological_practice/interpolation/interpolation.cpp",
+  "output": "CMakeFiles/interpolation.dir/interpolation.o"
+}
+]

@@ -107,10 +107,10 @@ std::vector<double> get_directional_diagram_projection(antenna_array &arr, size_
 }
 
 
-void antenna_array::create_default_configuration()
+void antenna_array::create_default_configuration(double wave_factor_period)
 {
     size_t size_x = 10, size_y = 10;
-    double w = size_x * wave_length/2.0, h = size_y * wave_length/2.0;
+    double w = size_x * wave_length*wave_factor_period, h = size_y * wave_length*wave_factor_period;
 
     antennas = std::vector<antenna>(size_x*size_y);
     modifiers = std::vector<std::complex<double>>(size_x*size_y,1.0);
@@ -122,10 +122,10 @@ void antenna_array::create_default_configuration()
     }
 }
 
-void antenna_array::create_grid_configuration_from(std::vector<std::vector<bool> > a)
+void antenna_array::create_grid_configuration_from(std::vector<std::vector<bool> > a,double wave_factor_period)
 {
     size_t size_x = a[0].size(), size_y = a.size();
-    double w = size_x * wave_length/2.0, h = size_y * wave_length/2.0;
+    double w = size_x * wave_length*wave_factor_period, h = size_y * wave_length*wave_factor_period;
 
     if (a.empty()) return;
 

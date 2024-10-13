@@ -26,6 +26,9 @@ MainWindow::MainWindow(QWidget *parent)
     m->setGradient(QCPColorGradient::gpHot);
     m->rescaleDataRange();
     p->rescaleAxes();
+
+    p->xAxis->setLabel("X, м");
+    p->yAxis->setLabel("Y, м");
     p->replot();
 }
 
@@ -46,13 +49,17 @@ QVector<double> linspace(double left, double right, size_t size)
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    array.create_grid_configuration_from(ui->widget->array);
+    double period = ui->DoubleSpinBox->value();
+    double distance = ui->DoubleSpinBox_2->value();
+    m->data()->setRange(QCPRange(-distance,distance),QCPRange(-distance,distance));
+
+    array.create_grid_configuration_from(ui->widget->array,period);
 
     auto& p = ui->widget_2;
     const int N = 256;
 
 
-    auto z = get_directional_diagram_projection(array,N,1000);
+    auto z = get_directional_diagram_projection(array,N,distance);
 
     for (auto i = 0; i < N; ++i) {
         for (auto j = 0; j <N; ++j) {

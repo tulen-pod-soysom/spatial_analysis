@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1090</width>
+    <width>927</width>
     <height>585</height>
    </rect>
   </property>
@@ -20,7 +20,7 @@
       <x>10</x>
       <y>10</y>
       <width>401</width>
-      <height>361</height>
+      <height>401</height>
      </rect>
     </property>
    </widget>
@@ -29,8 +29,8 @@
      <rect>
       <x>420</x>
       <y>10</y>
-      <width>661</width>
-      <height>361</height>
+      <width>491</width>
+      <height>401</height>
      </rect>
     </property>
    </widget>
@@ -40,8 +40,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>380</y>
+      <x>220</x>
+      <y>470</y>
       <width>191</width>
       <height>41</height>
      </rect>
@@ -54,7 +54,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>380</y>
+      <y>420</y>
       <width>191</width>
       <height>41</height>
      </rect>
@@ -67,7 +67,7 @@
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>380</y>
+      <y>420</y>
       <width>191</width>
       <height>41</height>
      </rect>
@@ -79,9 +79,9 @@
    <widget class="QWidget" name="formLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>430</x>
       <y>430</y>
-      <width>391</width>
+      <width>481</width>
       <height>101</height>
      </rect>
     </property>
@@ -89,12 +89,25 @@
      <item row="0" column="0">
       <widget class="QLabel" name="Label">
        <property name="text">
-        <string>Расстояние между узлами решетки</string>
+        <string>Период решетки</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QDoubleSpinBox" name="DoubleSpinBox"/>
+      <widget class="QDoubleSpinBox" name="DoubleSpinBox">
+       <property name="suffix">
+        <string> длины волны</string>
+       </property>
+       <property name="minimum">
+        <double>0.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.010000000000000</double>
+       </property>
+       <property name="value">
+        <double>0.500000000000000</double>
+       </property>
+      </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="Label_2">
@@ -104,7 +117,17 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QDoubleSpinBox" name="DoubleSpinBox_2"/>
+      <widget class="QDoubleSpinBox" name="DoubleSpinBox_2">
+       <property name="suffix">
+        <string> м</string>
+       </property>
+       <property name="maximum">
+        <double>500000.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>1000.000000000000000</double>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -114,7 +137,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1090</width>
+     <width>927</width>
      <height>23</height>
     </rect>
    </property>

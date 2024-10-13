@@ -10,17 +10,15 @@ CONFIG += c++17
 
 SOURCES += \
     antenna_array.cpp \
-    antenna_array.h \
     antenna_array_renderer.cpp \
     main.cpp \
     mainwindow.cpp \
-    my3dwidget.cpp \
     qcustomplot.cpp
 
 HEADERS += \
     antenna_array_renderer.h \
+    antenna_array.h \
     mainwindow.h \
-    my3dwidget.h \
     qcustomplot.h
 
 FORMS += \

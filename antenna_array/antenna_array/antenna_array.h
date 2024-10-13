@@ -48,9 +48,9 @@ struct antenna_array
 
     double wave_length = 1.0;
 
-    void create_default_configuration();
+    void create_default_configuration(double wave_factor_period = 0.5);
 
-    void create_grid_configuration_from(std::vector<std::vector<bool>> a);
+    void create_grid_configuration_from(std::vector<std::vector<bool>> a,double wave_factor_period = 0.5);
 
     template <typename InputIt>
     std::complex<double> get_output(InputIt begin, InputIt end)

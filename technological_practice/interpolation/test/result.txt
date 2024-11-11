@@ -1,0 +1,3 @@
+Image format: RGBA 8-bit
+bilinear MSE: 73.144
+biquadratic MSE: 111.115

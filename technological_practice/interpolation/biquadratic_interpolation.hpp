@@ -45,7 +45,7 @@ Image biquadratic_interpolation(ImageView& source, unsigned w, unsigned h, unsig
 
     // fill the non interpolated point
     unsigned i_ = w_new * i / w;
-    unsigned j_ = h_new * j / w;
+    unsigned j_ = h_new * j / h;
 
     out(i_,j_) = source(i,j);
 
@@ -138,7 +138,7 @@ Image biquadratic_interpolation(ImageView& source, unsigned w, unsigned h, unsig
     }
 
     // these are interpolated only in x axis
-    for (auto i_interp = i_ + 1; i_interp < i_ + w_new/width_gcd; ++i_interp) {
+    for (auto i_interp = i_ + 1; (i_interp < i_ + w_new/width_gcd) && (i_interp < w_new); ++i_interp) {
         double x = double(i_interp) * w / w_new;
         double x1,x2,x3;
         double z1,z2,z3;
@@ -175,7 +175,7 @@ Image biquadratic_interpolation(ImageView& source, unsigned w, unsigned h, unsig
     }
 
     // these are interpolated only in y axis
-    for (auto j_interp = j_ + 1; j_interp < j_ + h_new/height_gcd; ++j_interp) {
+    for (auto j_interp = j_ + 1; (j_interp < j_ + h_new/height_gcd) && (j_interp < h_new); ++j_interp) {
         double y = double(j_interp) * h / h_new;
         double y1,y2,y3;
         double z1,z2,z3;

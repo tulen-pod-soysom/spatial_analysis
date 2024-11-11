@@ -9,6 +9,7 @@
 
 #include "bilinear_interpolation.hpp"
 #include "biquadratic_interpolation.hpp"
+#include "image_io.hpp"
 
 #include <random>
 
@@ -51,7 +52,7 @@ int main()
 
     std::string filename; std::cin >> filename;
 
-    arma::uchar_mat im = gray_image_from_file(filename);
+    arma::uchar_mat im = gray_image_from_file<arma::uchar_mat>(filename);
 
     auto w = im.n_rows;
     auto h = im.n_cols;
@@ -59,10 +60,10 @@ int main()
     auto bilinear = im;
     auto biquadratic = im;
 
-    unsigned n_experiments = 7;
+    unsigned n_experiments = 20;
 
     std::random_device rd;
-    std::uniform_real_distribution<double> dist(0,k_max);
+    std::uniform_real_distribution<double> dist(1,k_max);
 
     for (auto i =0; i < n_experiments; ++i)
     {
@@ -75,6 +76,12 @@ int main()
 
     bilinear = bilinear_interpolation<arma::uchar_mat>(bilinear, bilinear.n_rows, bilinear.n_cols , w, h);
     biquadratic = biquadratic_interpolation<arma::uchar_mat>(biquadratic, biquadratic.n_rows, biquadratic.n_cols ,w,h);
+
+    gray_image_to_file(im,w ,h ,"gray.png" );
+    gray_image_to_file(bilinear, w, h, "bilinear.png");
+    gray_image_to_file(biquadratic, w, h, "biquadratic.png");
+
+    // std::ofstream result("result.txt");
 
     std::cout << "bilinear MSE: " << MSE(im,bilinear) << std::endl;
     std::cout << "biquadratic MSE: " << MSE(im,biquadratic) << std::endl;

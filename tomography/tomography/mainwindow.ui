@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1351</width>
-    <height>522</height>
+    <height>799</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>400</y>
-      <width>181</width>
+      <x>10</x>
+      <y>10</y>
+      <width>241</width>
       <height>41</height>
      </rect>
     </property>
@@ -31,9 +31,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
-      <width>371</width>
-      <height>371</height>
+      <y>60</y>
+      <width>291</width>
+      <height>291</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -55,19 +55,19 @@
    <widget class="QCustomPlot" name="widget" native="true">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>10</y>
-      <width>371</width>
-      <height>371</height>
+      <x>10</x>
+      <y>360</y>
+      <width>291</width>
+      <height>261</height>
      </rect>
     </property>
    </widget>
    <widget class="QSlider" name="horizontalSlider">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>430</y>
-      <width>371</width>
+      <x>10</x>
+      <y>660</y>
+      <width>291</width>
       <height>16</height>
      </rect>
     </property>
@@ -81,9 +81,9 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>400</y>
-      <width>371</width>
+      <x>10</x>
+      <y>630</y>
+      <width>291</width>
       <height>18</height>
      </rect>
     </property>
@@ -97,8 +97,8 @@
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>770</x>
-      <y>390</y>
+      <x>450</x>
+      <y>250</y>
       <width>181</width>
       <height>41</height>
      </rect>
@@ -110,9 +110,41 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>770</x>
+      <x>450</x>
       <y>10</y>
       <width>571</width>
+      <height>231</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::Box</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>250</y>
+      <width>181</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Построить спектр</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>330</y>
+      <width>371</width>
       <height>371</height>
      </rect>
     </property>
@@ -124,6 +156,38 @@
     </property>
     <property name="scaledContents">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>330</y>
+      <width>371</width>
+      <height>371</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::Box</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_4">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>250</y>
+      <width>181</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Восстановить изображение</string>
     </property>
    </widget>
   </widget>

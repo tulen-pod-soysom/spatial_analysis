@@ -59,6 +59,7 @@ void MainWindow::get_sinogram(){
 
     m /= *std::max_element(m.begin(),m.end()) / 255.0;
 
+    sinogram = m;
     auto image = create_QImage(m,m.n_rows,m.n_cols);
     ui->label_2->setPixmap(QPixmap::fromImage(image));
 }
@@ -90,5 +91,66 @@ void MainWindow::on_horizontalSlider_sliderMoved(int position)
     ui->widget->replot();
 
     ui->label->setText(QString::number(position) + " градусов: ");
+}
+
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    auto w = sinogram.n_rows;
+    auto h = sinogram.n_cols;
+
+    sinogram = bilinear_interpolation<arma::mat>(sinogram,w,h,w,closest_pow_2(h));
+    h = closest_pow_2(h);
+
+    spectre = arma::cx_mat(h,h);
+    sinogram_to_spectre(sinogram,w,h,spectre);
+
+
+    auto image = create_QImage_from_complex(spectre,spectre.n_rows,spectre.n_cols);
+    ui->label_3->setPixmap(QPixmap::fromImage(image));
+
+}
+
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    auto s = spectre;
+    // arma::mat s(spectre.n_rows,spectre.n_cols);
+
+    for (auto i = 0; i < s.n_rows/2;++i)
+    for (auto j = 0; j < s.n_cols/2;++j)
+    {
+        std::swap(s(i,j),s(i+s.n_rows/2,j+s.n_cols/2));
+        std::swap(s(i+s.n_rows/2,j),s(i,j+s.n_cols/2));
+    }
+
+    s = bilinear_interpolation<arma::cx_mat>(s,s.n_rows,s.n_cols,closest_pow_2(s.n_rows),closest_pow_2(s.n_cols));
+
+
+    auto s__ = fft_2d<arma::cx_mat,arma::cx_mat>(s,s.n_rows,s.n_cols,true);
+    // arma::cx_mat s__ = arma::ifft2(s);
+
+
+    for (auto i = 0; i < s__.n_rows/2;++i)
+    for (auto j = 0; j < s__.n_cols/2;++j)
+    {
+        std::swap(s__(i,j),s__(i+s__.n_rows/2,j+s__.n_cols/2));
+        std::swap(s__(i+s__.n_rows/2,j),s__(i,j+s__.n_cols/2));
+    }
+
+    restored_object = arma::mat(s__.n_rows,s__.n_cols);
+
+
+    double max = std::abs(*std::max_element(s__.begin(),s__.end(),[](auto a, auto b){return std::abs(a) < std::abs(b);}));
+
+    std::transform(s__.begin(),s__.end(),restored_object.begin(),[&](auto& v){return double(std::abs(v)/max * 255);});
+
+
+
+    auto image_1 = create_QImage_from_complex(s,s.n_rows,s.n_cols);
+    ui->label_3->setPixmap(QPixmap::fromImage(image_1));
+
+    auto image = create_QImage(restored_object,restored_object.n_rows,restored_object.n_cols);
+    ui->label_4->setPixmap(QPixmap::fromImage(image));
 }
 
